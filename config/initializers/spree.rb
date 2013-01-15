@@ -19,6 +19,7 @@ Spree.config do |config|
   config.checkout_zone = 'Australia'
   config.address_requires_state = true
   config.default_country_id  = 12 # This should be Australia, see: spree/core/db/default/spree/countries.yml
+  config.allow_guest_checkout = false
 
   config.searcher_class = OpenFoodWeb::Searcher
 
