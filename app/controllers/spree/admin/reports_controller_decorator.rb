@@ -102,7 +102,7 @@ Spree::Admin::ReportsController.class_eval do
         proc { |lis| lis.first.variant.product.group_buy ? (lis.first.variant.product.group_buy_unit_size || 0.0) : "" },
         proc { |lis| lis.first.variant.options_text },
         proc { |lis| lis.first.variant.weight || 0 },
-        proc { |lis|  lis.sum { |li| li.quantity } },
+        proc { |lis| lis.sum { |li| li.quantity } },
         proc { |lis| lis.sum { |li| li.max_quantity || 0 } },
         proc { |lis| "" },
         proc { |lis| "" } ]
@@ -171,9 +171,10 @@ Spree::Admin::ReportsController.class_eval do
 
     when "bulk_coop_customer_payments"
 
-      header = ["Customer", "Date of Order", "Total Cost", "Amount Owing", "Amount Paid"]
+      header = ["Customer", "Email", "Date of Order", "Total Cost", "Amount Owing", "Amount Paid"]
 
       columns = [ proc { |lis| lis.first.order.bill_address.firstname + " " + lis.first.order.bill_address.lastname },
+        proc { |lis| lis.first.order.email },
         proc { |lis| lis.first.order.completed_at.to_s },
         proc { |lis| lis.map { |li| li.order }.uniq.sum { |o| o.total } },
         proc { |lis| lis.map { |li| li.order }.uniq.sum { |o| o.outstanding_balance } },
@@ -327,6 +328,10 @@ Spree::Admin::ReportsController.class_eval do
 
   end
 
+
+# Order Cycles
+
+
   def order_cycles
     params[:q] = {} unless params[:q]
 
@@ -350,19 +355,20 @@ Spree::Admin::ReportsController.class_eval do
     @report_type = params[:report_type]
 
     case params[:report_type]
+      
     when "order_cycle_supplier_totals"
       table_items = line_items
       @include_blank = 'All'
 
-      header = ["Supplier", "Product", "Variant", "Amount", "Cost per Unit", "Total Cost", "Status", "Incoming Transport"]
-
+      header = ["Supplier", "Product", "Variant", "Amount", "Cost per Unit", "Product ($)", "Shipping ($)", "Incoming Transport"]
+# check this- not sure about it at all!
       columns = [ proc { |line_items| line_items.first.variant.product.supplier.name },
         proc { |line_items| line_items.first.variant.product.name },
         proc { |line_items| line_items.first.variant.options_text },
         proc { |line_items| line_items.sum { |li| li.quantity } },
         proc { |line_items| line_items.first.variant.price },
         proc { |line_items| line_items.sum { |li| li.quantity * li.variant.price } },
-        proc { |line_items| "" },
+        proc { |line_items| line_items.map { |li| li.order }.uniq.sum { |o| o.ship_total } },
         proc { |line_items| "incoming transport" } ]
 
         rules = [ { group_by: proc { |line_item| line_item.variant.product.supplier },
@@ -376,7 +382,7 @@ Spree::Admin::ReportsController.class_eval do
       table_items = line_items
       @include_blank = 'All'
 
-      header = ["Supplier", "Product", "Variant", "To Distributor", "Amount", "Cost per Unit", "Total Cost", "Shipping Method"]
+      header = ["Supplier", "Product", "Variant", "To Distributor", "Amount", "Unit ($)", "Product ($)", "Shipping Method"]
 
       columns = [ proc { |line_items| line_items.first.variant.product.supplier.name },
         proc { |line_items| line_items.first.variant.product.name },
@@ -393,9 +399,9 @@ Spree::Admin::ReportsController.class_eval do
         sort_by: proc { |product| product.name } },
         { group_by: proc { |line_item| line_item.variant },
         sort_by: proc { |variant| variant.options_text },
-        summary_columns: [ proc { |line_items| line_items.first.variant.product.supplier.name },
-          proc { |line_items| line_items.first.variant.product.name },
-          proc { |line_items| line_items.first.variant.options_text },
+        summary_columns: [ proc { |line_items| "" },
+          proc { |line_items| "" },
+          proc { |line_items| "" },
           proc { |line_items| "TOTAL" },
           proc { |line_items| line_items.sum { |li| li.quantity } },
           proc { |line_items| line_items.first.variant.price },
@@ -408,7 +414,7 @@ Spree::Admin::ReportsController.class_eval do
       table_items = line_items
       @include_blank = 'All'
 
-      header = ["Distributor", "Supplier", "Product", "Variant", "Amount", "Cost per Unit", "Total Cost", "Total Shipping Cost", "Shipping Method"]
+      header = ["Distributor", "Supplier", "Product", "Variant", "Amount", "Unit ($)", "Product ($)", "Shipping ($)", "Shipping Method"]
 
       columns = [ proc { |line_items| line_items.first.order.distributor.name },
         proc { |line_items| line_items.first.variant.product.supplier.name },
@@ -422,7 +428,7 @@ Spree::Admin::ReportsController.class_eval do
 
       rules = [ { group_by: proc { |line_item| line_item.order.distributor },
         sort_by: proc { |distributor| distributor.name },
-        summary_columns: [ proc { |line_items| line_items.first.order.distributor.name },
+        summary_columns: [ proc { |line_items| "" },
           proc { |line_items| "TOTAL" },
           proc { |line_items| "" },
           proc { |line_items| "" },
@@ -462,10 +468,10 @@ Spree::Admin::ReportsController.class_eval do
       sort_by: proc { |distributor| distributor.name } },
       { group_by: proc { |line_item| line_item.order },
       sort_by: proc { |order| order.bill_address.lastname + " " + order.bill_address.firstname },
-      summary_columns: [ proc { |line_items| line_items.first.order.distributor.name },
-        proc { |line_items| line_items.first.order.bill_address.firstname + " " + line_items.first.order.bill_address.lastname },
-        proc { |line_items| line_items.first.order.email },
-        proc { |line_items| line_items.first.order.bill_address.phone },
+      summary_columns: [ proc { |line_items| "" },
+        proc { |line_items| "" },
+        proc { |line_items| "" },
+        proc { |line_items| "" },
         proc { |line_items| "TOTAL" },
         proc { |line_items| "" },
         proc { |line_items| "" },
@@ -480,6 +486,22 @@ Spree::Admin::ReportsController.class_eval do
       { group_by: proc { |line_item| line_item.variant },
        sort_by: proc { |variant| variant.options_text } } ]
 
+     when "order_cycle_customer_payments"
+      table_items = line_items
+      @include_blank = 'All'  
+
+       header = ["Customer", "Email", "Date of Order", "Total Cost", "Amount Owing", "Amount Paid"]
+
+       columns = [ proc { |line_items| line_items.first.order.bill_address.firstname + " " + line_items.first.order.bill_address.lastname },
+         proc { |line_items| line_items.first.order.email },
+         proc { |line_items| line_items.first.order.completed_at.to_s },
+         proc { |line_items| line_items.map { |li| li.order }.uniq.sum { |o| o.total } },
+         proc { |line_items| line_items.map { |li| li.order }.uniq.sum { |o| o.outstanding_balance } },
+         proc { |line_items| line_items.map { |li| li.order }.uniq.sum { |o| o.payment_total } } ]
+
+       rules = [ { group_by: proc { |li| li.order },
+         sort_by: proc { |order|  order.completed_at } } ]
+    
     else
       table_items = line_items
       @include_blank = 'All'
