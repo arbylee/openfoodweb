@@ -18,7 +18,7 @@ module OpenFoodWeb
       order_and_distributor_details = []
       @orders.each do |order|
         order.line_items.each do |line_item|
-          order_and_distributor_details << [order.created_at, order.id,
+          order_and_distributor_details << [order.completed_at, order.id,
             order.bill_address.full_name, order.email, order.bill_address.phone, order.bill_address.city,
             line_item.product.sku, line_item.product.name, line_item.variant.options_text, line_item.quantity, line_item.max_quantity, line_item.price * line_item.quantity, line_item.itemwise_shipping_cost,
             order.payments.first.payment_method.andand.name,

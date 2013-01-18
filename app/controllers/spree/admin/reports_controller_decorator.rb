@@ -10,21 +10,27 @@ Spree::Admin::ReportsController.class_eval do
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:bulk_coop => {:name => "Bulk Co-Op", :description => "Reports for Bulk Co-Op orders"}})
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:payments => {:name => "Payment Reports", :description => "Reports for Payments"}})
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:order_cycles => {:name => "Order Cycle Reports", :description => "Reports for Order Cycles"}})
+  
+  def set_params params_q
+    params_q = {} unless params_q
 
-  def orders_and_distributors
-    params[:q] = {} unless params[:q]
-
-    if params[:q][:completed_at_gt].blank?
-      params[:q][:completed_at_gt] = Time.zone.now.beginning_of_month
+    if params_q[:completed_at_gt].blank?
+      params_q[:completed_at_gt] = Time.zone.now.beginning_of_month
     else
-      params[:q][:completed_at_gt] = Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day rescue Time.zone.now.beginning_of_month
+      params_q[:completed_at_gt] = Time.zone.parse(params_q[:completed_at_gt]).beginning_of_day rescue Time.zone.now.beginning_of_month
     end
 
-    if params[:q] && !params[:q][:completed_at_lt].blank?
-      params[:q][:completed_at_lt] = Time.zone.parse(params[:q][:completed_at_lt]).end_of_day rescue ""
+    if params_q && !params_q[:completed_at_lt].blank?
+      params_q[:completed_at_lt] = Time.zone.parse(params_q[:completed_at_lt]).end_of_day rescue ""
     end
-    params[:q][:meta_sort] ||= "completed_at.desc"
-
+    params_q[:meta_sort] ||= "completed_at.desc"
+    
+    params_q
+  end
+  
+  def orders_and_distributors    
+    params[:q] = set_params(params[:q])
+    
     @search = Spree::Order.complete.search(params[:q])
     orders = @search.result
 
@@ -41,18 +47,7 @@ Spree::Admin::ReportsController.class_eval do
   end
 
   def group_buys
-    params[:q] = {} unless params[:q]
-
-    if params[:q][:completed_at_gt].blank?
-      params[:q][:completed_at_gt] = Time.zone.now.beginning_of_month
-    else
-      params[:q][:completed_at_gt] = Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day rescue Time.zone.now.beginning_of_month
-    end
-
-    if params[:q] && !params[:q][:completed_at_lt].blank?
-      params[:q][:completed_at_lt] = Time.zone.parse(params[:q][:completed_at_lt]).end_of_day rescue ""
-    end
-    params[:q][:meta_sort] ||= "completed_at.desc"
+    params[:q] = set_params(params[:q])
 
     @search = Spree::Order.complete.search(params[:q])
     orders = @search.result
@@ -72,18 +67,7 @@ Spree::Admin::ReportsController.class_eval do
   end
 
   def bulk_coop
-    params[:q] = {} unless params[:q]
-
-    if params[:q][:completed_at_gt].blank?
-      params[:q][:completed_at_gt] = Time.zone.now.beginning_of_month
-    else
-      params[:q][:completed_at_gt] = Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day rescue Time.zone.now.beginning_of_month
-    end
-
-    if params[:q] && !params[:q][:completed_at_lt].blank?
-      params[:q][:completed_at_lt] = Time.zone.parse(params[:q][:completed_at_lt]).end_of_day rescue ""
-    end
-    params[:q][:meta_sort] ||= "completed_at.desc"
+    params[:q] = set_params(params[:q])
 
     @search = Spree::Order.complete.search(params[:q])
     orders = @search.result
@@ -225,18 +209,7 @@ Spree::Admin::ReportsController.class_eval do
   end
 
   def payments
-    params[:q] = {} unless params[:q]
-
-    if params[:q][:completed_at_gt].blank?
-      params[:q][:completed_at_gt] = Time.zone.now.beginning_of_month
-    else
-      params[:q][:completed_at_gt] = Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day rescue Time.zone.now.beginning_of_month
-    end
-
-    if params[:q] && !params[:q][:completed_at_lt].blank?
-      params[:q][:completed_at_lt] = Time.zone.parse(params[:q][:completed_at_lt]).end_of_day rescue ""
-    end
-    params[:q][:meta_sort] ||= "completed_at.desc"
+    params[:q] = set_params(params[:q])
 
     @search = Spree::Order.complete.search(params[:q])
     orders = @search.result
@@ -333,18 +306,7 @@ Spree::Admin::ReportsController.class_eval do
 
 
   def order_cycles
-    params[:q] = {} unless params[:q]
-
-    if params[:q][:completed_at_gt].blank?
-      params[:q][:completed_at_gt] = Time.zone.now.beginning_of_month
-    else
-      params[:q][:completed_at_gt] = Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day rescue Time.zone.now.beginning_of_month
-    end
-
-    if params[:q] && !params[:q][:completed_at_lt].blank?
-      params[:q][:completed_at_lt] = Time.zone.parse(params[:q][:completed_at_lt]).end_of_day rescue ""
-    end
-    params[:q][:meta_sort] ||= "completed_at.desc"
+    params[:q] = set_params(params[:q])
 
     @search = Spree::Order.complete.search(params[:q])
     orders = @search.result
