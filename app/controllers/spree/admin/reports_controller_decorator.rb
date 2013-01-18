@@ -1,12 +1,10 @@
 require 'csv'
 require 'open_food_web/order_and_distributor_report'
-require 'open_food_web/group_buy_report'
 require 'open_food_web/order_grouper'
 
 Spree::Admin::ReportsController.class_eval do
 
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:orders_and_distributors => {:name => "Orders And Distributors", :description => "Orders with distributor details"}})
-  Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:group_buys => {:name => "Group Buys", :description => "Orders by supplier and variant"}})
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:bulk_coop => {:name => "Bulk Co-Op", :description => "Reports for Bulk Co-Op orders"}})
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:payments => {:name => "Payment Reports", :description => "Reports for Payments"}})
   Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({:order_cycles => {:name => "Order Cycle Reports", :description => "Reports for Order Cycles"}})
@@ -43,26 +41,6 @@ Spree::Admin::ReportsController.class_eval do
         @report.table.each { |row| csv << row }
       end
       send_data csv_string, :filename => "orders_and_distributors.csv"
-    end
-  end
-
-  def group_buys
-    params[:q] = set_params(params[:q])
-
-    @search = Spree::Order.complete.search(params[:q])
-    orders = @search.result
-    
-    @distributors = Enterprise.is_distributor
-
-    @report = OpenFoodWeb::GroupBuyReport.new orders
-    unless params[:csv]
-      render :html => @report
-    else
-      csv_string = CSV.generate do |csv|
-        csv << @report.header
-        @report.table.each { |row| csv << row }
-      end
-      send_data csv_string, :filename => "group_buy.csv"
     end
   end
 

@@ -16,14 +16,6 @@ feature %q{
     page.should have_content 'Order date'
   end
 
-  scenario "group buys report" do
-    login_to_admin_section
-    click_link 'Reports'
-    click_link 'Group Buys'
-
-    page.should have_content 'Supplier'
-  end
-
   scenario "bulk co-op report" do
     login_to_admin_section
     click_link 'Reports'
