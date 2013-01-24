@@ -13,7 +13,7 @@ feature %q{
     click_link 'Reports'
     click_link 'Orders And Distributors'
 
-    page.should have_content 'Order date'
+    page.should have_content 'Supplier'
   end
 
   scenario "bulk co-op report" do

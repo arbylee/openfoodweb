@@ -1,3 +1,6 @@
+-# This page shows the orders and distributors report. The header and table fields are
+-# set at lib/open_food_web/order_and_distributor_report.rb
+
 = form_for @search, :url => spree.orders_and_distributors_admin_reports_path  do |s|
   = label_tag nil, t(:date_range)
   %br
@@ -20,12 +23,13 @@
   %thead
     %tr{'data-hook' => "orders_header"}
       - @report.header.each do |heading|
-        %th=heading
+        %th=heading 
   %tbody
     - @report.table.each do |row|
       %tr
         - row.each do |column|
           %td= column
+        
     - if @report.table.empty?
       %tr
         %td{:colspan => "2"}= t(:none)
