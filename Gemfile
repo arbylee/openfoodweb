@@ -20,6 +20,7 @@ gem 'unicorn'
 gem 'bugsnag'
 gem 'spree_heroku', :git => 'git://github.com/eaterprises/spree-heroku.git'
 gem 'haml'
+gem 'sass'
 gem 'aws-sdk'
 gem 'andand'
 gem 'truncate_html'
@@ -61,5 +62,6 @@ end
 
 group :development do
   gem 'pry-debugger'
-  gem 'debugger-linecache'
+  gem 'debugger-linecache'  
+  gem "rails-erd"
 end
