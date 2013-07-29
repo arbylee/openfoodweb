@@ -1,6 +1,6 @@
 .add-to-cart
   - order = current_order(false)
-  - if !@product.has_stock? && !Spree::Config[:allow_backorders]
+  - if @product.total_on_hand <= 0 #&& !Spree::Config[:allow_backorders] # TODO: uncomment this and add the preference
     = content_tag('strong', t(:out_of_stock))
 
   - elsif !order.nil? && !DistributorChangeValidator.new(order).can_change_distributor? && !@product.distributors.include?(order.distributor)
@@ -11,11 +11,11 @@
   - else
     %div(class = "columns alpha two")
       %div Quantity
-      = number_field_tag (@product.has_variants? ? :quantity : "variants[#{@product.master.id}]"), 1, :class => 'title', :in => 1..@product.on_hand
+      = number_field_tag (@product.has_variants? ? :quantity : "variants[#{@product.master.id}]"), 1, :class => 'title', :in => 1..@product.total_on_hand
     - if @product.group_buy
       %div(class = "columns alpha three")
         %div Max quantity
-        = number_field_tag (@product.has_variants? ? :max_quantity : "variant_attributes[#{@product.master.id}][max_quantity]"), 1, :class => 'title max_quantity', :in => 1..@product.on_hand
+        = number_field_tag (@product.has_variants? ? :max_quantity : "variant_attributes[#{@product.master.id}][max_quantity]"), 1, :class => 'title max_quantity', :in => 1..@product.total_on_hand
     %div.cleared
       %br
       - if order.nil? || order.distributor.nil?
