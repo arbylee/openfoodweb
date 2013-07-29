@@ -7,7 +7,7 @@ gem 'pg'
 gem 'spree', :git => 'git://github.com/spree/spree.git', :branch => '2-0-stable'
 gem 'spree_i18n', :git => 'git://github.com/spree/spree_i18n.git', :branch => '2-0-stable'
 gem 'spree_paypal_express', :git => 'git://github.com/spree/spree_paypal_express.git', :branch => '2-0-stable'
-gem 'spree_last_address', :git => 'git://github.com/eaterprises/spree-last-address.git' #, :branch => '1-3-stable'
+gem 'spree_last_address', :git => 'git://github.com/eaterprises/spree-last-address.git', :tag => 'spree-2.0'
 gem 'spree_auth_devise', :git => 'https://github.com/spree/spree_auth_devise.git', :branch => '2-0-stable'
 
 gem 'comfortable_mexican_sofa'

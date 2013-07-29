@@ -16,7 +16,8 @@ GIT
 
 GIT
   remote: git://github.com/eaterprises/spree-last-address.git
-  revision: f5ed71a5482fbc16da559737903bb46fe032c150
+  revision: 70dddc1dc82b558bbba34bb371080cff373814d6
+  tag: spree-2.0
   specs:
     spree_last_address (1.1.0)
       spree_core (>= 1.1)
