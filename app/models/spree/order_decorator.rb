@@ -38,18 +38,17 @@ Spree::Order.class_eval do
 
   private
 
-  # On creation of the order (when the first item is added to the user's cart), set the
-  # shipping method to the first one available and create a shipment.
-  # order.create_shipment! creates an adjustment for the shipping cost on the order,
+  # On creation of the order (when the first item is added to the user's cart), create a shipment 
+  # (with the default shipping method).
+  # self.shipments.create! creates an adjustment for the shipping cost on the order,
   # which means that the customer can see their shipping cost at every step of the
   # checkout process, not just after the delivery step.
   # This is based on the assumption that there's only one shipping method visible to the user,
   # which is a method using the itemwise shipping calculator.
   def set_default_shipping_method
-    self.shipping_method = Spree::ShippingMethod.where("display_on != 'back_end'").first
-    if self.shipping_method
+    self.shipments.create!
+    if self.shipment
       self.save!
-      self.create_shipment!
     else
       raise 'No default shipping method found'
     end
