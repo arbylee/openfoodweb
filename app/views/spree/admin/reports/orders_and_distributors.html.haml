@@ -1,19 +1,19 @@
 = form_for @search, :url => spree.orders_and_distributors_admin_reports_path  do |s|
-  = label_tag nil, t(:date_range)
+  = label_tag nil, Spree.t(:date_range)
   %br
   .date-range-filter
     %div{"class" => "left sub-field"}
       = s.text_field :completed_at_gt, :class => 'datepicker'
       %br
-      = label_tag nil, t(:start), :class => 'sub'
+      = label_tag nil, Spree.t(:start), :class => 'sub'
     %div{"class" => "right sub-field"}
       = s.text_field :completed_at_lt, :class => 'datepicker'
       %br
-      = label_tag nil, t(:stop)
+      = label_tag nil, Spree.t(:stop)
   = check_box_tag :csv
   = label_tag :csv, "Download as csv"
   %br
-  = button t(:search)
+  = button Spree.t(:search)
 %br
 %br
 %table#listing_orders.index
@@ -28,5 +28,5 @@
           %td= column
     - if @report.table.empty?
       %tr
-        %td{:colspan => "2"}= t(:none)
+        %td{:colspan => "2"}= Spree.t(:none)
 

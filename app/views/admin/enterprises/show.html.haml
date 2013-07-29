@@ -47,5 +47,5 @@
     %td= @enterprise.next_collection_at
 %p
   = link_to :Edit, main_app.edit_admin_enterprise_path(@enterprise), :class => 'edit_enterprise'
-  = t(:or)
-  = link_to t(:back), main_app.admin_enterprises_path
+  = Spree.t(:or)
+  = link_to Spree.t(:back), main_app.admin_enterprises_path

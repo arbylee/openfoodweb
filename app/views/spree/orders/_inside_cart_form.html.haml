@@ -18,5 +18,5 @@
 
   .links{'data-hook' => "cart_buttons"}
     = button_tag :class => 'primary', :id => 'update-button' do
-      = t(:update)
-    = link_to t(:checkout), checkout_path, :class => 'button checkout primary', :id => 'checkout-link'
+      = Spree.t(:update)
+    = link_to Spree.t(:checkout), checkout_path, :class => 'button checkout primary', :id => 'checkout-link'

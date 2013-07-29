@@ -3,5 +3,5 @@
   = variant.options_text
   - if @order.insufficient_stock_lines.include? line_item
     %span.out-of-stock
-      = variant.in_stock? ? t(:insufficient_stock, :on_hand => variant.on_hand) : t(:out_of_stock)
+      = variant.in_stock? ? Spree.t(:insufficient_stock, :on_hand => variant.on_hand) : Spree.t(:out_of_stock)
       %br/

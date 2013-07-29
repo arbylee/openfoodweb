@@ -7,7 +7,7 @@
 
 <% if Rails.env.production? %>
   <% if Spree::Dash::Config.configured? %>
-    <h1><%= t(:overview) %></h1>
+    <h1><%= Spree.t(:overview) %></h1>
     <div id="jirafe"></div>
     <%= javascript_tag :defer => 'defer' do %>
       jirafe.jQuery('#jirafe').jirafe({
@@ -31,9 +31,9 @@
     </div>
     <br/>
     <div class="preview-buttons">
-      <%= link_to content_tag(:span, t(:activate)), admin_analytics_sign_up_path, :class => 'button green' %>
-      <%= t(:or) %> &nbsp;
-      <%= link_to content_tag(:span, t(:learn_more)), "http://spreecommerce.com/blog/2012/01/31/introducing-spree-analytics/", :class => 'button', :target => '_blank' %>
+      <%= link_to content_tag(:span, Spree.t(:activate)), admin_analytics_sign_up_path, :class => 'button green' %>
+      <%= Spree.t(:or) %> &nbsp;
+      <%= link_to content_tag(:span, Spree.t(:learn_more)), "http://spreecommerce.com/blog/2012/01/31/introducing-spree-analytics/", :class => 'button', :target => '_blank' %>
     </div>
   <% end %>
 <% end %>
